@@ -17,7 +17,10 @@ def index():
         if action == 'encrypt':
             result = encrypt_text(text)
         elif action == 'decrypt':
-            result = decrypt_text(text)
+            try:
+                result = decrypt_text(text)
+            except Exception:
+                result = "Decryption Failed: Invalid encrypted text or wrong key."
 
     return render_template('index.html', result=result, text=text)
 
