@@ -3,6 +3,8 @@ import hashlib
 import base64
 from Crypto.Cipher import AES
 
+DEFAULT_PASSWORD = "strong-password-123"
+
 def _derive_key(password: str) -> bytes:
     """
     Derive a 32-byte AES key from a password string using SHA-256.
@@ -10,7 +12,7 @@ def _derive_key(password: str) -> bytes:
     """
     return hashlib.sha256(password.encode('utf-8')).digest()  # 32 bytes
 
-def encrypt_text(text: str, password: str) -> str:
+def encrypt_text(text: str, password: str = DEFAULT_PASSWORD) -> str:
     """
     Encrypt `text` (str) with AES-EAX using a key derived from `password`.
     Returns a Base64-encoded string that contains: nonce || tag || ciphertext.
@@ -38,9 +40,10 @@ def encrypt_text(text: str, password: str) -> str:
     return base64.b64encode(package).decode('utf-8')
 
 
-# Quick demonstration when running this file directly
-sample_text = "FCAI Damietta University"
-password = "strong-password-123"
-encrypted = encrypt_text(sample_text, password)
-print("Base64 ciphertext:")
-print(encrypted)
+if __name__ == "__main__":
+    # Quick demonstration when running this file directly
+    sample_text = "FCAI Damietta University"
+    # Uses default password
+    encrypted = encrypt_text(sample_text)
+    print("Base64 ciphertext:")
+    print(encrypted)
