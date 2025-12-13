@@ -14,7 +14,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
 
@@ -61,13 +61,16 @@
 
         textarea {
             width: 100%;
-            height: 140px;
+            width: 100%;
+            min-height: 50px;
+            /* Start height: small */
+            height: auto;
             /* Taller */
             border-radius: 12px;
             border: 2px solid #e0e0e0;
             /* Softer border */
-            padding: 15px 20px;
-            /* More internal padding */
+            padding: 15px 90px 15px 20px;
+            /* More internal padding, extra right padding for icons */
             font-size: 16px;
             resize: none;
             box-sizing: border-box;
@@ -104,6 +107,29 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
 
+        /* Style for the Paste Icon */
+        .paste-icon {
+            position: absolute;
+            top: 15px;
+            right: 50px;
+            /* Positioned to the left of clear icon */
+            background: white;
+            color: #95a5a6;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            transition: 0.2s;
+            z-index: 10;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .paste-icon:hover {
+            color: #3498db;
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
         .button-group {
             display: flex;
             justify-content: center;
@@ -113,9 +139,9 @@
         }
 
         button {
-            padding: 12px 30px;
-            /* Larger buttons */
-            font-size: 16px;
+            padding: 10px 25px;
+            /* Slightly smaller buttons */
+            font-size: 15px;
             border: none;
             border-radius: 25px;
             /* Pill shape */
@@ -149,36 +175,49 @@
             box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
         }
 
-        button.copy {
-            background-color: #2ecc71;
-            color: white;
-            margin-left: 15px;
-            padding: 8px 20px;
-            font-size: 14px;
-            border-radius: 8px;
-            vertical-align: middle;
-        }
-
-        button.copy:hover {
-            background-color: #27ae60;
-        }
-
-        .result {
-            margin-top: 0;
-            padding: 25px;
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            word-wrap: break-word;
-            font-family: 'Consolas', monospace;
-            font-size: 15px;
-            text-align: left;
-            position: relative;
-            min-height: 40px;
+        button.copy-icon-btn {
+            background: none;
+            border: none;
+            color: #95a5a6;
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            padding: 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+
+        button.copy-icon-btn:hover {
+            color: #2ecc71;
+            transform: scale(1.1);
+        }
+
+        .result-wrapper {
+            position: relative;
+            margin-top: 5px;
+        }
+
+        .result-label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        /* Readonly textarea for result */
+        textarea[readonly] {
+            background-color: #f8f9fa;
             border-left: 4px solid #8e44ad;
-            /* Accent line */
+            color: #2c3e50;
+            cursor: default;
         }
     </style>
     <script>
@@ -189,15 +228,12 @@
             navigator.clipboard.writeText(resultText).then(() => {
                 const btn = document.getElementById('copyBtn');
                 // Visual feedback
-                const originalHTML = btn.innerHTML;
-                const originalBg = btn.style.backgroundColor;
-
-                btn.style.backgroundColor = "#27ae60";
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                btn.style.color = "#27ae60";
+                btn.innerHTML = '<i class="fas fa-check"></i>';
 
                 setTimeout(() => {
-                    btn.style.backgroundColor = "";
-                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    btn.style.color = "";
+                    btn.innerHTML = '<i class="fas fa-copy"></i>';
                 }, 2000);
             });
         }
@@ -214,6 +250,44 @@
                 window.history.replaceState(null, null, window.location.href);
             }
         }
+
+        async function pasteToInput() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const textarea = document.querySelector('textarea[name="text"]');
+                textarea.value = text;
+                // Optional: visual feedback
+                const pasteBtn = document.querySelector('.paste-icon');
+                const originalColor = pasteBtn.style.color;
+                pasteBtn.style.color = "#27ae60";
+                setTimeout(() => {
+                    pasteBtn.style.color = "";
+                }, 500);
+            } catch (err) {
+                console.error('Failed to read clipboard contents: ', err);
+                alert('Failed to paste from clipboard. Please allow clipboard permissions.');
+            }
+        }
+
+        function autoResizeTextarea() {
+            const textarea = document.querySelector('textarea[name="text"]');
+            textarea.style.height = 'auto'; // Reset height
+            textarea.style.height = textarea.scrollHeight + 'px'; // Set to scrollHeight
+        }
+
+        // Attach listener on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', () => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+                });
+                // Initial resize
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            });
+        });
     </script>
 </head>
 
@@ -223,6 +297,8 @@
         <form method="post">
 
             <div class="input-wrapper">
+                <!-- Icon to paste text -->
+                <i class="fas fa-paste paste-icon" onclick="pasteToInput()" title="Paste text"></i>
                 <!-- Icon to clear text inside the box -->
                 <i class="fas fa-trash-alt clear-icon" onclick="clearFields()" title="Clear text"></i>
                 <textarea name="text" placeholder="Type or paste your text here...">{{ text }}</textarea>
@@ -234,15 +310,17 @@
             </div>
         </form>
 
-        <div class="result">
-            <div>
-                <strong>Result:</strong> <span id="resultText">{{ result }}</span>
+        <div class="result-section">
+            <span class="result-label">Result:</span>
+            <div class="result-wrapper">
+                <textarea readonly id="resultText" placeholder="Result will appear here...">{{ result }}</textarea>
+                {% if result %}
+                <button type="button" class="copy-icon-btn" id="copyBtn" onclick="copyToClipboard()"
+                    title="Copy to clipboard">
+                    <i class="fas fa-copy"></i>
+                </button>
+                {% endif %}
             </div>
-            {% if result %}
-            <button type="button" class="copy" id="copyBtn" onclick="copyToClipboard()">
-                <i class="fas fa-copy"></i> Copy
-            </button>
-            {% endif %}
         </div>
     </div>
 </body>
