@@ -121,14 +121,14 @@ button.decrypt {
 
         <!-- INPUT TEXTAREA -->
         <div class="textarea-wrapper">
-            <textarea id="inputText" name="text"> </textarea>
+            <textarea id="inputText" name="text">{{ text }}</textarea>
 
             <i class="fa-solid fa-trash icon-btn delete"
-               onclick="clearInput()"
+               onclick="clearFields()"
                title="Delete"></i>
 
-            <i class="fa-solid fa-paste icon-btn paste"
-               onclick="pasteText()"
+            <i class="fa-solid fa-paste icon-btn paste paste-icon"
+               onclick="pasteToInput()"
                title="Paste"></i>
         </div>
 
@@ -141,32 +141,18 @@ button.decrypt {
         <b>Result:</b>
 
         <div class="textarea-wrapper">
-            <textarea id="resultText" readonly></textarea>
+            <textarea id="resultText" readonly>{{ result }}</textarea>
 
-            <i class="fa-regular fa-copy icon-btn copy"
-               onclick="copyResult()"
+            <i id="copyBtn" class="fa-regular fa-copy icon-btn copy"
+               onclick="copyToClipboard()"
                title="Copy"></i>
         </div>
     </div>
 </div>
 
-<script>
-function clearInput() {
-    document.getElementById("inputText").value = "";
-}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-function pasteText() {
-    navigator.clipboard.readText().then(text => {
-        document.getElementById("inputText").value = text;
-    });
-}
-
-function copyResult() {
-    const r = document.getElementById("resultText");
-    r.select();
-    document.execCommand("copy");
-}
-</script>
+</body>
 
 </body>
 </html>
