@@ -36,4 +36,4 @@ if __name__ == "__main__":
         print("\nDecrypted text:")
         print(decrypted)
     except ValueError:
-        print("❌ Decryption failed: corrupted ciphertext or wrong key")
+        print("Decryption failed: corrupted ciphertext or wrong key")
