@@ -27,11 +27,9 @@ def decrypt_text(ciphertext_b64: str, password: str = DEFAULT_PASSWORD) -> str:
     return plaintext.decode('utf-8')
 
 
-# 🔹 طلب النص المشفر من المستخدم
 if __name__ == "__main__":
     encrypted_text = input("Enter the Base64 encrypted text:\n")
     try:
-        # Uses default password
         decrypted = decrypt_text(encrypted_text)
         print("\nDecrypted text:")
         print(decrypted)

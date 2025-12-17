@@ -10,7 +10,7 @@ def _derive_key(password: str) -> bytes:
     Derive a 32-byte AES key from a password string using SHA-256.
     This makes it easy to pass any password/text as the key.
     """
-    return hashlib.sha256(password.encode('utf-8')).digest()  # 32 bytes
+    return hashlib.sha256(password.encode('utf-8')).digest() 
 
 def encrypt_text(text: str, password: str = DEFAULT_PASSWORD) -> str:
     """
@@ -25,25 +25,20 @@ def encrypt_text(text: str, password: str = DEFAULT_PASSWORD) -> str:
     if not isinstance(password, str):
         raise TypeError("password must be a str")
 
-    key = _derive_key(password)             # 32-byte key
-    plaintext = text.encode('utf-8')        # handle Unicode
+    key = _derive_key(password)            
+    plaintext = text.encode('utf-8')       
 
-    # Create AES-EAX cipher (authenticated mode)
     cipher = AES.new(key, AES.MODE_EAX)
-    nonce = cipher.nonce                    # typically 16 bytes
+    nonce = cipher.nonce                    
     ciphertext, tag = cipher.encrypt_and_digest(plaintext)
 
-    # pack: nonce || tag || ciphertext
     package = nonce + tag + ciphertext
 
-    # return Base64 string
     return base64.b64encode(package).decode('utf-8')
 
 
 if __name__ == "__main__":
-    # Quick demonstration when running this file directly
     sample_text = "FCAI Damietta University"
-    # Uses default password
     encrypted = encrypt_text(sample_text)
     print("Base64 ciphertext:")
     print(encrypted)
