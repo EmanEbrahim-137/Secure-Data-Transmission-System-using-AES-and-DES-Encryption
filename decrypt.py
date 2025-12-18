@@ -5,16 +5,9 @@ from Crypto.Cipher import AES
 DEFAULT_PASSWORD = "strong-password-123"
 
 def _derive_key(password: str) -> bytes:
-    """
-    Derive the same 32-byte AES key from the password using SHA-256.
-    """
-    return hashlib.sha256(password.encode('utf-8')).digest()  # 32 bytes
+    return hashlib.sha256(password.encode('utf-8')).digest()  
 
 def decrypt_text(ciphertext_b64: str, password: str = DEFAULT_PASSWORD) -> str:
-    """
-    Decrypt a Base64-encoded string produced by encrypt_text().
-    Uses the fixed password from the encryption code.
-    """
     key = _derive_key(password)
 
     package = base64.b64decode(ciphertext_b64)

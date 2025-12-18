@@ -9,7 +9,7 @@ DEFAULT_PASSWORD = "strong-password-123"
 def _derive_key(password: str) -> bytes:
 
     full_hash = hashlib.sha256(password.encode('utf-8')).digest()
-    return full_hash[:8]  # DES uses 8-byte keys
+    return full_hash[:8]  
 
 def encrypt_text(text: str, password: str = DEFAULT_PASSWORD) -> str:
 
