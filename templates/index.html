@@ -132,6 +132,15 @@ button.decrypt {
                title="Paste"></i>
         </div>
 
+        <!-- ALGORITHM SELECTION -->
+        <div style="margin-top: 15px;">
+            <label><b>Algorithm:</b></label>
+            <select name="algorithm" style="margin-left: 10px; padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="aes" {% if algorithm == 'aes' or not algorithm %}selected{% endif %}>AES</option>
+                <option value="des" {% if algorithm == 'des' %}selected{% endif %}>DES</option>
+            </select>
+        </div>
+
         <button type="submit" name="action" value="encrypt" class="encrypt">Encrypt</button>
         <button type="submit" name="action" value="decrypt" class="decrypt">Decrypt</button>
     </form>
